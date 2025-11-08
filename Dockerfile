@@ -1,5 +1,5 @@
 # ---- Builder stage ----
-FROM rust:1.85-bookworm AS builder
+FROM rust:1.91-bookworm AS builder
 WORKDIR /src
 # Create a dummy project to leverage Docker layer caching for dependencies
 RUN USER=root cargo new --bin app
