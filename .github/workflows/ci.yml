@@ -113,14 +113,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Trivy FS scan
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
           format: sarif
           output: trivy-fs.sarif
           ignore-unfixed: true
       - name: Trivy Dockerfile scan (config)
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: config
           format: sarif
