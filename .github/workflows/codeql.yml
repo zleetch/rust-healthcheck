@@ -3,8 +3,22 @@ name: "CodeQL"
 on:
   push:
     branches: ["main"]
+    paths:
+      - "**/*.rs"
+      - "src/**"
+      - "tests/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/codeql.yml"
   pull_request:
     branches: ["**"]
+    paths:
+      - "**/*.rs"
+      - "src/**"
+      - "tests/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/codeql.yml"
   schedule:
     - cron: "0 3 * * 1"
 
@@ -19,7 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: github/codeql-action/init@v3
         with:
           languages: rust
       - uses: github/codeql-action/analyze@v3
+
