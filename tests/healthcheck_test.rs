@@ -1,5 +1,5 @@
 use httpmock::{Method::GET, MockServer};
-use rust_healthcheck::{run_healthchecks, Config};
+use rust_healthcheck::{Config, run_healthchecks};
 
 fn make_config(urls: Vec<String>) -> Config {
     Config {
