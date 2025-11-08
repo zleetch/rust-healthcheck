@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use futures::{stream, StreamExt};
+use futures::{StreamExt, stream};
 use metrics::{counter, histogram};
 use reqwest::{Client, StatusCode};
 use serde::Deserialize;
@@ -207,7 +207,11 @@ pub async fn run_healthchecks(cfg: &Config) -> Result<Summary> {
         .collect::<Vec<_>>()
         .await;
 
-    let mut summary = Summary { total: outcomes.len(), up: 0, down: 0 };
+    let mut summary = Summary {
+        total: outcomes.len(),
+        up: 0,
+        down: 0,
+    };
     for outcome in outcomes {
         match outcome.status {
             HealthStatus::Up => summary.up += 1,

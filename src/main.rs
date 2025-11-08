@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use rust_healthcheck::{load_config, run_healthchecks, Config};
+use rust_healthcheck::{Config, load_config, run_healthchecks};
 use std::path::PathBuf;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
