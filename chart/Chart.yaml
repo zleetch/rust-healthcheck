@@ -1,0 +1,7 @@
+apiVersion: v2
+name: rust-healthcheck
+description: A lightweight and blazingly fast health check application built in Rust, designed to monitor the status and uptime of your web services and APIs.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+

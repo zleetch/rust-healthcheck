@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rust-healthcheck.fullname" . }}-config
+  labels:
+    app.kubernetes.io/name: {{ include "rust-healthcheck.name" . }}
+    helm.sh/chart: {{ include "rust-healthcheck.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  config.json: |
+{{ .Values.config.content | indent 4 }}
+

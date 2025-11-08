@@ -1,0 +1,44 @@
+image:
+  repository: ghcr.io/your-org/rust-healthcheck
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+podAnnotations: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+  seccompProfile:
+    type: RuntimeDefault
+
+config:
+  # JSON config used by the app. Override per environment.
+  content: |
+    {
+      "endpoints_to_check": ["https://www.rust-lang.org","https://httpstat.us/503"],
+      "request_timeout_ms": 5000,
+      "concurrency": 8,
+      "retries": 0,
+      "user_agent": "rust-healthcheck/1.0",
+      "log_level": "info",
+      "metrics_log_interval_sec": null
+    }
+

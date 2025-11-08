@@ -1,0 +1,14 @@
+{
+  "endpoints_to_check": [
+    "https://www.google.com",
+    "https://www.rust-lang.org",
+    "https://httpstat.us/503"
+  ],
+  "request_timeout_ms": 5000,
+  "concurrency": 8,
+  "retries": 0,
+  "user_agent": "rust-healthcheck/1.0",
+  "log_level": "info",
+  "metrics_log_interval_sec": null
+}
+
