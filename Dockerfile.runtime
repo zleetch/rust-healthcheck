@@ -1,4 +1,3 @@
-# Runtime-only image that expects a prebuilt binary at dist/rust-healthcheck
 FROM debian:bookworm-slim AS runtime
 ENV RUST_LOG=info \
     APP_HOME=/app
