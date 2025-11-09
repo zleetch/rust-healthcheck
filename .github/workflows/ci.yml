@@ -16,22 +16,7 @@ on:
       - "config/**"
       - "chart/**"
       - "deploy/**"
-  push:
-    branches: ["main"]
-    paths:
-      - "**/*.rs"
-      - "src/**"
-      - "tests/**"
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - "rust-toolchain.toml"
-      - ".github/workflows/ci.yml"
-      - "Dockerfile"
-      - "Dockerfile.runtime"
-      - "config/**"
-      - "chart/**"
-      - "deploy/**"
-
+  
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
