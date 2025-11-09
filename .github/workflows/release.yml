@@ -24,17 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Release Please
-        uses: google-github-actions/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         with:
           release-type: rust
-          package-name: rust-healthcheck
-          bump-minor-pre-major: true
-          changelog-types: |
-            feat: Features
-            fix: Bug Fixes
-            perf: Performance Improvements
-            refactor: Refactoring
-            docs: Documentation
-            chore: Chores
-            ci: CI
+          path: "."
+          target-branch: main
 
