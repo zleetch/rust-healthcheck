@@ -240,16 +240,6 @@ pub async fn check_endpoint_once(
             }
         }
         Err(e) => {
-            let reason = if e.is_timeout() {
-                "timeout"
-            } else if e.is_connect() {
-                "connect"
-            } else if e.is_body() {
-                "body"
-            } else {
-                "other"
-            };
-            let _ = reason; // reason is still used for logging context below
             counter!("healthcheck_down_total").increment(1);
             CheckOutcome {
                 endpoint: redact_url(&ep.url),
@@ -284,7 +274,7 @@ pub async fn check_with_retries(
                     "retrying failed endpoint"
                 );
                 // backoff with jitter
-                let factor = 1u64.checked_pow(attempt.min(20)).unwrap_or(u64::MAX);
+                let factor = 2u64.saturating_pow(attempt.min(20));
                 let base = base_backoff_ms.saturating_mul(factor);
                 let delay = base.min(max_backoff_ms);
                 let jitter = rand::random::<u64>() % (delay / 2 + 1);
@@ -332,7 +322,7 @@ pub async fn run_healthchecks(cfg: &Config) -> Result<Summary> {
         "starting healthchecks"
     );
 
-    let outcomes = stream::iter(endpoints.clone())
+    let outcomes = stream::iter(endpoints)
         .map(|endpoint| {
             let client = client.clone();
             let sem = Arc::clone(&semaphore);
