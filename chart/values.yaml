@@ -1,9 +1,29 @@
 image:
-  repository: ghcr.io/your-org/rust-healthcheck
+  repository: ghcr.io/zleetch/rust-healthcheck
   tag: "latest"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
+cron:
+  enabled: false
+  # standard cron schedule, e.g. "*/5 * * * *"
+  schedule: "*/5 * * * *"
+
+networkPolicy:
+  enabled: true
+  egress:
+    - to:
+        - {}
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+
+secretHeaders:
+  enabled: false
+  name: ""
+  mountPath: "/app/secret-headers"
 
 resources:
   limits:

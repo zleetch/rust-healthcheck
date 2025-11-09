@@ -1,17 +1,26 @@
 image:
-  repository: ghcr.io/your-org/rust-healthcheck
+  repository: ghcr.io/zleetch/rust-healthcheck
   tag: "dev"
   pullPolicy: IfNotPresent
+
+cron:
+  enabled: true
+  schedule: "*/5 * * * *"
 
 config:
   content: |
     {
-      "endpoints_to_check": ["https://example.dev/health","https://httpstat.us/200","https://httpstat.us/500"],
+      "endpoints_to_check": [
+        "https://example.dev/health",
+        "https://httpstat.us/200",
+        "https://httpstat.us/500"
+      ],
       "request_timeout_ms": 3000,
       "concurrency": 4,
       "retries": 0,
       "user_agent": "rust-healthcheck/dev",
       "log_level": "info",
-      "metrics_log_interval_sec": null
+      "metrics_log_interval_sec": null,
+      "watch_interval_sec": null
     }
 
