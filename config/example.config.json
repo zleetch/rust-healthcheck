@@ -6,9 +6,9 @@
   ],
   "request_timeout_ms": 5000,
   "concurrency": 8,
-  "retries": 0,
+  "retries": 5,
   "user_agent": "rust-healthcheck/1.0",
   "log_level": "info",
-  "metrics_log_interval_sec": null
+  "metrics_log_interval_sec": 5
 }
 

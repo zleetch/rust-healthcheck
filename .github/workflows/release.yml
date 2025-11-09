@@ -29,4 +29,3 @@ jobs:
           release-type: rust
           path: "."
           target-branch: main
-
