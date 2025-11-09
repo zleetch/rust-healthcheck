@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/zleetch/rust-healthcheck/compare/v0.1.1...v0.2.0) (2025-11-09)
+
+
+### Features
+
+* **app:** advanced endpoints, watch mode, TLS options, JSON logs, schema ([2f7014f](https://github.com/zleetch/rust-healthcheck/commit/2f7014fad9ced61d262d9792e83d16b2d44f05ad))
+
 ## [0.1.1](https://github.com/zleetch/rust-healthcheck/compare/v0.1.0...v0.1.1) (2025-11-09)
 
 
