@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/zleetch/rust-healthcheck/compare/v0.2.0...v0.2.1) (2025-11-09)
+
+
+### Bug Fixes
+
+* exponential backoff, remove unused variable, avoid cloning endpoints ([a961a54](https://github.com/zleetch/rust-healthcheck/commit/a961a5456bf96291012f663eee855f9d4455fd7f))
+* exponential backoff, remove unused variable, avoid cloning endpoints ([a6b18bf](https://github.com/zleetch/rust-healthcheck/commit/a6b18bf589f024223168f1d0a0c271b202fe08f4))
+
 ## [0.2.0](https://github.com/zleetch/rust-healthcheck/compare/v0.1.1...v0.2.0) (2025-11-09)
 
 
