@@ -3,8 +3,38 @@ name: CI
 on:
   pull_request:
     branches: ["**"]
+    paths:
+      - "**/*.rs"
+      - "src/**"
+      - "tests/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/ci.yml"
+      - "Dockerfile"
+      - "Dockerfile.runtime"
+      - "config/**"
+      - "chart/**"
+      - "deploy/**"
   push:
     branches: ["main"]
+    paths:
+      - "**/*.rs"
+      - "src/**"
+      - "tests/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/ci.yml"
+      - "Dockerfile"
+      - "Dockerfile.runtime"
+      - "config/**"
+      - "chart/**"
+      - "deploy/**"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -16,9 +46,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
+      - name: Enable sccache
+        uses: mozilla-actions/sccache-action@v0.0.4
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -27,13 +61,19 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cache/sccache/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('rust-toolchain.toml') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
       - name: rustfmt
         run: cargo fmt --all -- --check
       - name: clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        env:
+          RUSTC_WRAPPER: sccache
+          SCCACHE_GHA_ENABLED: "false"
+        run: |
+          cargo clippy --all-targets --all-features -- -D warnings \
+          || (echo "sccache failed, retrying without RUSTC_WRAPPER" && RUSTC_WRAPPER= cargo clippy --all-targets --all-features -- -D warnings)
 
   test:
     name: Test
@@ -41,7 +81,11 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - uses: dtolnay/rust-toolchain@stable
+      - name: Enable sccache
+        uses: mozilla-actions/sccache-action@v0.0.4
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -50,10 +94,14 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cache/sccache/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('rust-toolchain.toml') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
       - name: test
+        env:
+          RUSTC_WRAPPER: sccache
+          SCCACHE_GHA_ENABLED: "false"
         run: cargo test --all --verbose
 
   build:
@@ -62,7 +110,11 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - uses: dtolnay/rust-toolchain@stable
+      - name: Enable sccache
+        uses: mozilla-actions/sccache-action@v0.0.4
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -71,11 +123,21 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cache/sccache/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('rust-toolchain.toml') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
       - name: build
+        env:
+          RUSTC_WRAPPER: sccache
+          SCCACHE_GHA_ENABLED: "false"
         run: cargo build --release
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-healthcheck-${{ github.sha }}
+          path: target/release/rust-healthcheck
+          if-no-files-found: error
 
   docker-build:
     name: Docker build (no push)
@@ -83,16 +145,25 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Download binary artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rust-healthcheck-${{ github.sha }}
+          path: dist
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
-      - name: Build
+      - name: Build (runtime-only using artifact)
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Dockerfile.runtime
           platforms: linux/amd64
           push: false
           tags: rust-healthcheck:test
+          cache-from: type=gha,scope=rust-healthcheck
+          cache-to: type=gha,mode=max,scope=rust-healthcheck
 
   cargo-audit:
     name: Cargo audit (vulns)
@@ -130,7 +201,10 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-fs.sarif
+          category: trivy-fs
       - name: Upload SARIF (config)
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-config.sarif
+          category: trivy-config
+

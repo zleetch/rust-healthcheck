@@ -1,0 +1,13 @@
+FROM debian:bookworm-slim AS runtime
+ENV RUST_LOG=info \
+    APP_HOME=/app
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* && update-ca-certificates
+RUN useradd -u 10001 -r -s /sbin/nologin appuser && mkdir -p "${APP_HOME}/config"
+WORKDIR ${APP_HOME}
+# Copy prebuilt binary produced by CI into the image
+COPY dist/rust-healthcheck ${APP_HOME}/rust-healthcheck
+# Optionally copy example config as default
+COPY config/example.config.json ${APP_HOME}/config/config.json
+USER 10001:10001
+ENTRYPOINT ["./rust-healthcheck","--config","/app/config/config.json"]
+

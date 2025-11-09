@@ -3,6 +3,16 @@ name: Release Please
 on:
   push:
     branches: ["main"]
+    paths:
+      - "**/*.rs"
+      - "src/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/release-please.yml"
+      - "Dockerfile"
+      - "Dockerfile.runtime"
+      - "chart/**"
+      - "deploy/**"
   workflow_dispatch:
 
 permissions:
