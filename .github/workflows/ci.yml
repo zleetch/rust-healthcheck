@@ -37,7 +37,7 @@ jobs:
         with:
           components: clippy, rustfmt
       - name: Enable sccache
-        uses: mozilla-actions/sccache-action@v0.0.4
+        uses: mozilla-actions/sccache-action@v0.0.9
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -70,7 +70,7 @@ jobs:
           fetch-depth: 1
       - uses: dtolnay/rust-toolchain@stable
       - name: Enable sccache
-        uses: mozilla-actions/sccache-action@v0.0.4
+        uses: mozilla-actions/sccache-action@v0.0.9
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -99,7 +99,7 @@ jobs:
           fetch-depth: 1
       - uses: dtolnay/rust-toolchain@stable
       - name: Enable sccache
-        uses: mozilla-actions/sccache-action@v0.0.4
+        uses: mozilla-actions/sccache-action@v0.0.9
       - name: Cache cargo
         uses: actions/cache@v4
         with:
