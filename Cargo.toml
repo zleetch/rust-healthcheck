@@ -15,7 +15,7 @@ serde_yaml = "0.9.34-deprecated"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter", "json"] }
-schemars = "0.8"
+schemars = "1.1"
 rand = "0.8"
 url = "2"
 
