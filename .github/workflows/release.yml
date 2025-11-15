@@ -129,7 +129,7 @@ jobs:
           if-no-files-found: error
 
       - name: Scan Image (Grype)
-        uses: anchore/scan-action@v4
+        uses: anchore/scan-action@v7
         with:
           image: "ghcr.io/${{ github.repository }}@${{ steps.build-push.outputs.digest }}"
           severity-cutoff: high
