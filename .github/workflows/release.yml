@@ -78,7 +78,7 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.event.release.tag_name }}
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: rust-healthcheck-${{ github.sha }}
           path: dist
