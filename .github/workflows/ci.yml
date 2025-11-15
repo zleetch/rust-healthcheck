@@ -118,7 +118,7 @@ jobs:
           SCCACHE_GHA_ENABLED: "false"
         run: cargo build --release
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: rust-healthcheck-${{ github.sha }}
           path: target/release/rust-healthcheck
